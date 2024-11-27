@@ -8,7 +8,7 @@ public class App
     {
 
     
-        String input = "289";
+        String input = "variavelQualquer";
         Scanner scan = new Scanner (input.getBytes());
         System.out.println(scan.nextToken());
 
