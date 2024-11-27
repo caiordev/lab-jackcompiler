@@ -20,7 +20,7 @@ public class Scanner {
     private int start;
 
     private static final Map<String, TokenType> keywords;
- 
+
 
     static {
         keywords = new HashMap<>();
@@ -47,7 +47,7 @@ public class Scanner {
         keywords.put("return", TokenType.RETURN);
     }
 
-    
+
     public Scanner (byte[] input) {
         this.input = input;
         current = 0;
@@ -61,7 +61,7 @@ public class Scanner {
             ch = peek();
         }
     }
-    
+
 
     public Token nextToken () {
 
@@ -79,14 +79,64 @@ public class Scanner {
         }
 
         switch (ch) {
+            case '/':
+                advance();
+                return new Token (TokenType.SLASH,"/");
+            case '*':
+                advance();
+                return new Token (TokenType.ASTERISK,"*");
+            case '.':
+                advance();
+                return new Token (TokenType.DOT,".");
+            case '&':
+                advance();
+                return new Token (TokenType.AND,"&");
+            case '|':
+                advance();
+                return new Token (TokenType.OR,"|");
+            case '~':
+                advance();
+                return new Token (TokenType.NOT,"~");
+
+            case '>':
+                advance();
+                return new Token (TokenType.GT,">");
+            case '<':
+                advance();
+                return new Token (TokenType.LT,"<");
+            case '=':
+                advance();
+                return new Token (TokenType.EQ,"=");
+            case '(':
+                advance();
+                return new Token (TokenType.LPAREN,"(");
+            case ')':
+                advance();
+                return new Token (TokenType.RPAREN,")");
+            case '{':
+                advance();
+                return new Token (TokenType.LBRACE,"{");
+            case '}':
+                advance();
+                return new Token (TokenType.RBRACE,"}");
+            case '[':
+                advance();
+                return new Token (TokenType.LBRACKET,"[");
+            case ']':
+                advance();
+                return new Token (TokenType.RBRACKET,"]");
+            case ';':
+                advance();
+                return new Token (TokenType.SEMICOLON,";");
+            case ',':
+                advance();
+                return new Token (TokenType.COMMA,",");
             case '+':
                 advance();
-                return new Token (PLUS,"+");
+                return new Token(TokenType.PLUS, "+");
             case '-':
                 advance();
                 return new Token (MINUS,"-");
-            case '"':
-                return string();
             case 0:
                 return new Token (EOF,"EOF");
             default:
@@ -108,9 +158,9 @@ public class Scanner {
         while (Character.isDigit(peek())) {
             advance();
         }
-        
-            String num = new String(input, start, current-start, StandardCharsets.UTF_8)  ;
-            return new Token(NUMBER, num);
+
+        String num = new String(input, start, current-start, StandardCharsets.UTF_8)  ;
+        return new Token(NUMBER, num);
     }
 
     private Token string () {
@@ -134,21 +184,21 @@ public class Scanner {
 
     private boolean isAlpha(char c) {
         return (c >= 'a' && c <= 'z') ||
-               (c >= 'A' && c <= 'Z') ||
+                (c >= 'A' && c <= 'Z') ||
                 c == '_';
-      }
-    
-      private boolean isAlphaNumeric(char c) {
-        return isAlpha(c) || Character.isDigit((c));
-      }
-    
+    }
 
-    private char peek () {
-        if (current < input.length)
-           return (char)input[current];
-       return 0;
+    private boolean isAlphaNumeric(char c) {
+        return isAlpha(c) || Character.isDigit((c));
     }
 
 
-    
+    private char peek () {
+        if (current < input.length)
+            return (char)input[current];
+        return 0;
+    }
+
+
+
 }

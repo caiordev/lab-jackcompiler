@@ -3,18 +3,18 @@ package br.ufma.ecp;
 import br.ufma.ecp.token.Token;
 import br.ufma.ecp.token.TokenType;
 
-public class App 
+public class App
 {
 
-    
+
     public static void main( String[] args )
     {
 
-    
-        String input = "45 variavel while if";
+
+        String input = "45 variavel + while < , if";
         Scanner scan = new Scanner (input.getBytes());
         for (Token tk = scan.nextToken(); tk.type != TokenType.EOF; tk = scan.nextToken()) {
-                System.out.println(tk);
+            System.out.println(tk);
         }
 
         /*
@@ -38,4 +38,6 @@ public class App
         System.out.println(tk);
         */
     }
+
+
 }
