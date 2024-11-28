@@ -12,9 +12,33 @@ public class Token {
     }
 
     public String toString() {
-        var type = this.type.toString();
+        String categoria = type.toString().toLowerCase();
 
-        return "<"+ type +">" + lexeme + "</"+ type + ">";
+        String valor = lexeme;
+        if (TokenType.isSymbol(lexeme.charAt(0))) {
+            categoria = "symbol";
+            //Os símbolos <, >, ", e & são impressos como &lt; &gt; &quot; e &amp; Para não conflitar com o significado destes símbolos no XML
+            if (valor.equals(">")) {
+                valor = "&gt;" ;
+            } else if (valor.equals("<")) {
+                valor = "&lt;" ;
+            } else if (valor.equals("\"")) {
+                valor = "&quot;" ;
+            } else if (valor.equals("&")) {
+                valor = "&amp;" ;
+            }
+
+        } else if (categoria.equals("number")) {
+            categoria = "integerConstant";
+        } else if (categoria.equals("ident")) {
+            categoria = "identifier";
+        } else if (categoria.equals("string")) {
+            categoria = "stringConstant";
+        } else {
+            categoria = "keyword";
+        }
+        return "<" + categoria + "> " + valor  + " </" + categoria + ">";
+
     }
 
 
