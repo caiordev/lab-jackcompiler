@@ -79,6 +79,8 @@ public class Scanner {
         }
 
         switch (ch) {
+            case '"':
+                return string();
             case '/':
                 advance();
                 return new Token (TokenType.SLASH,"/");
@@ -97,7 +99,6 @@ public class Scanner {
             case '~':
                 advance();
                 return new Token (TokenType.NOT,"~");
-
             case '>':
                 advance();
                 return new Token (TokenType.GT,">");
