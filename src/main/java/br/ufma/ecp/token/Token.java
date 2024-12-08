@@ -1,4 +1,5 @@
 package br.ufma.ecp.token;
+
 public class Token {
 
     public final TokenType type;
