@@ -1,6 +1,24 @@
+package br.ufma.ecp;
 
+import br.ufma.ecp.token.Token;
+import br.ufma.ecp.token.TokenType;
 
 public class Parser {
+
+    public void parseLet() {
+    }
+
+    public void parseIf() {
+    }
+
+    public void parseDo() {
+    }
+
+    public void parseSubroutineDec() {
+    }
+
+    public void parseClassVarDec() {
+    }
 
     private static class ParseError extends RuntimeException {}
 
@@ -78,6 +96,34 @@ public class Parser {
             report(token.line, " at '" + token.lexeme + "'", message);
         }
         return new ParseError();
+    }
+    
+
+    public void parseTerm(){
+        printNonTerminal("term");
+        switch (peekToken.type){
+            case NUMBER:
+                expectPeek(TokenType.NUMBER);
+                break;
+            case STRING:
+                expectPeek(TokenType.STRING);
+                break;
+            case FALSE:
+            case NULL:
+            case TRUE:
+                expectPeek(TokenType.FALSE, TokenType.NULL, TokenType.TRUE);
+                break;
+            case THIS:
+                expectPeek(TokenType.THIS);
+                break;
+            case IDENT:
+                expectPeek(TokenType.IDENT);
+                break;
+            default:
+                throw error(peekToken, "term expected");
+        }
+
+        printNonTerminal("/term");
     }
 
 
