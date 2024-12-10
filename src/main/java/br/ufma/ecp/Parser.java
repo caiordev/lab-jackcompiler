@@ -21,6 +21,12 @@ public class Parser {
         printNonTerminal("/letStatement");
     }
 
+    public void parseSubroutineCall(){
+        expectPeek(IDENT);
+        expectPeek(LPAREN);
+        expectPeek(RPAREN);
+    }
+
     public void parseIf() {
     }
 
