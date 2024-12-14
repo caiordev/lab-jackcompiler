@@ -30,8 +30,13 @@ public class Parser {
     public void parseIf() {
     }
 
-    public void parseDo() {
-    }
+    public void testParseDo() {
+        printNonTerminal("doStatement");
+        expectPeek(DO);
+        parseSubroutineCall();
+        expectPeek(SEMICOLON);
+        printNonTerminal("/doStatement");
+     }
 
     public void parseSubroutineDec() {
     }
@@ -157,6 +162,4 @@ public class Parser {
 
         printNonTerminal("/term");
     }
-
-
 }
