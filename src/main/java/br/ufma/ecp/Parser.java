@@ -63,6 +63,16 @@ public class Parser {
     }
 
     public void parseClassVarDec() {
+        printNonTerminal("classVarDec");
+        expectPeek(STATIC, FIELD);
+        expectPeek(INT, CHAR, BOOLEAN, IDENT);
+        expectPeek(IDENT);
+        while (peekTokenIs(COMMA)) {
+            expectPeek(COMMA);
+            expectPeek(IDENT);
+        }
+        expectPeek(SEMICOLON);
+        printNonTerminal("/classVarDec");
     }
 
     private static class ParseError extends RuntimeException {}

@@ -293,6 +293,49 @@ public class ParserTest extends TestSupport {
     }
 
     @Test
+    public void testParseClassVarDec2() {
+        var input = "static Square square;";
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parseClassVarDec();
+        var expectedResult = """
+            <classVarDec>
+            <keyword> static </keyword>
+            <identifier> Square </identifier>
+            <identifier> square </identifier>
+            <symbol> ; </symbol>
+          </classVarDec>
+                """;
+
+        var result = parser.XMLOutput();
+        expectedResult = expectedResult.replaceAll("  ", "");
+        result = result.replaceAll("\r", ""); // no codigo em linux não tem o retorno de carro
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    public void testParseClassVarDec3() {
+        var input = "static Square square, square2;";
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parseClassVarDec();
+        var expectedResult = """
+            <classVarDec>
+            <keyword> static </keyword>
+            <identifier> Square </identifier>
+            <identifier> square </identifier>
+            <symbol> , </symbol>
+            <identifier> square2 </identifier>
+            <symbol> ; </symbol>
+          </classVarDec>
+                """;
+
+        var result = parser.XMLOutput();
+        expectedResult = expectedResult.replaceAll("  ", "");
+        result = result.replaceAll("\r", ""); // no codigo em linux não tem o retorno de carro
+        assertEquals(expectedResult,result);
+}
+
+
+    @Test
     public void testParseSubroutineDec() {
         var input = """
             constructor Square new(int Ax, int Ay, int Asize) {
