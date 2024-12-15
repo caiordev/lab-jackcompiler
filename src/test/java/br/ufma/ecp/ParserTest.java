@@ -472,6 +472,18 @@ public class ParserTest extends TestSupport {
     }
 
     @Test
+    public void testParserWithMain() throws IOException {
+        var input = fromFile("Square/Main.jack");
+        var expectedResult =  fromFile("Square/Main.xml");
+
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parse();
+        var result = parser.XMLOutput();
+        expectedResult = expectedResult.replaceAll("  ", "");
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
     public void testVarDeclaration () {
 
         var input = """
@@ -515,5 +527,52 @@ public class ParserTest extends TestSupport {
         result = result.replaceAll("\r", ""); // no codigo em linux não tem o retorno de carro
         assertEquals(expectedResult, result);
     }
+
+@Test
+public void testParseWhile() {
+    var input = "while (x < 10) { let x = x + 1; }";
+    var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+    parser.parseWhile();
+
+    var expectedResult = """
+        <whileStatement>
+        <keyword> while </keyword>
+        <symbol> ( </symbol>
+        <expression>
+          <term>
+            <identifier> x </identifier>
+          </term>
+          <symbol> &lt; </symbol>
+          <term>
+            <integerConstant> 10 </integerConstant>
+          </term>
+        </expression>
+        <symbol> ) </symbol>
+        <symbol> { </symbol>
+        <statements>
+          <letStatement>
+            <keyword> let </keyword>
+            <identifier> x </identifier>
+            <symbol> = </symbol>
+            <expression>
+              <term>
+                <identifier> x </identifier>
+              </term>
+              <symbol> + </symbol>
+              <term>
+                <integerConstant> 1 </integerConstant>
+              </term>
+            </expression>
+            <symbol> ; </symbol>
+          </letStatement>
+        </statements>
+        <symbol> } </symbol>
+      </whileStatement>
+    """;
+    var result = parser.XMLOutput();
+    expectedResult = expectedResult.replaceAll("  ", "");
+    result = result.replaceAll("\r", ""); // no codigo em linux não tem o retorno de carro
+    assertEquals(expectedResult, result);
+}
 
 }
