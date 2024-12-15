@@ -60,6 +60,19 @@ public class Parser {
      }
 
     public void parseSubroutineDec() {
+        printNonTerminal("subroutineDec");
+        expectPeek(CONSTRUCTOR, FUNCTION, METHOD);
+        if (peekTokenIs(VOID)) {
+            expectPeek(VOID);
+        } else {
+            expectPeek(INT, CHAR, BOOLEAN, IDENT);
+        }
+        expectPeek(IDENT);
+        expectPeek(LPAREN);
+        parseParameterList();
+        expectPeek(RPAREN);
+        parseSubroutineBody();
+        printNonTerminal("/subroutineDec");
     }
 
     public void parseClassVarDec() {
@@ -154,7 +167,7 @@ public class Parser {
     }
 
     static public boolean isOperator(String op) {
-        return op!= "" && "+-*/<>=~&|".contains(op);
+        return op!= null && "+-*/<>=~&|".contains(op);
     }
 
     void parseExpression() {
@@ -225,7 +238,7 @@ public class Parser {
 
     public void parseStatements() {
         printNonTerminal("statements");
-        while (peekToken.type == IF || peekToken.type == DO) {
+        while (peekToken.type == LET || peekToken.type == IF || peekToken.type == DO || peekToken.type == RETURN) {
             parseStatement();
         }
         printNonTerminal("/statements");
@@ -233,15 +246,69 @@ public class Parser {
 
     private void parseStatement() {
         switch (peekToken.type) {
+            case LET:
+                parseLet();
+                break;
             case IF:
                 parseIf();
                 break;
             case DO:
                 parseDo();
                 break;
+            case RETURN:
+                parseReturn();
+                break;
             default:
                 throw error(peekToken, "Expected a statement");
         }
+    }
+
+    public void parseReturn() {
+        printNonTerminal("returnStatement");
+        expectPeek(RETURN);
+        if (!peekTokenIs(SEMICOLON)) {
+            parseExpression();
+        }
+        expectPeek(SEMICOLON);
+        printNonTerminal("/returnStatement");
+    }
+
+    private void parseParameterList() {
+        printNonTerminal("parameterList");
+        if (!peekTokenIs(RPAREN)) {
+            expectPeek(INT, CHAR, BOOLEAN, IDENT);
+            expectPeek(IDENT);
+            while (peekTokenIs(COMMA)) {
+                expectPeek(COMMA);
+                expectPeek(INT, CHAR, BOOLEAN, IDENT);
+                expectPeek(IDENT);
+            }
+        }
+        printNonTerminal("/parameterList");
+    }
+
+    private void parseSubroutineBody() {
+        printNonTerminal("subroutineBody");
+        expectPeek(LBRACE);
+        while (peekTokenIs(VAR)) {
+            parseVarDec();
+        }
+        parseStatements();
+        expectPeek(RBRACE);
+        printNonTerminal("/subroutineBody");
+    }
+
+    private void parseVarDec() {
+        printNonTerminal("varDec");
+        expectPeek(VAR);
+        expectPeek(INT, CHAR, BOOLEAN, IDENT);
+        expectPeek(IDENT);
+        while (peekTokenIs(COMMA)) {
+            expectPeek(COMMA);
+            expectPeek(IDENT);
+        }
+        expectPeek(SEMICOLON);
+        printNonTerminal("/varDec");
     }
 
 }
