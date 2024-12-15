@@ -30,7 +30,7 @@ public class Parser {
     public void parseIf() {
     }
 
-    public void testParseDo() {
+    public void parseDo() {
         printNonTerminal("doStatement");
         expectPeek(DO);
         parseSubroutineCall();
@@ -155,11 +155,40 @@ public class Parser {
                 break;
             case IDENT:
                 expectPeek(TokenType.IDENT);
+                if (peekTokenIs(DOT)) {
+                    expectPeek(DOT);
+                    expectPeek(IDENT);
+                    if (peekTokenIs(LPAREN)) {
+                        expectPeek(LPAREN);
+                        parseExpressionList();
+                        expectPeek(RPAREN);
+                    }
+                } else if (peekTokenIs(LPAREN)) {
+                    expectPeek(LPAREN);
+                    parseExpressionList();
+                    expectPeek(RPAREN);
+                } else if (peekTokenIs(LBRACKET)) {
+                    expectPeek(LBRACKET);
+                    parseExpression();
+                    expectPeek(RBRACKET);
+                }
                 break;
             default:
                 throw error(peekToken, "term expected");
         }
 
         printNonTerminal("/term");
+    }
+
+    public void parseExpressionList() {
+        printNonTerminal("expressionList");
+        if (!peekTokenIs(RPAREN)) {
+            parseExpression();
+            while (peekTokenIs(COMMA)) {
+                expectPeek(COMMA);
+                parseExpression();
+            }
+        }
+        printNonTerminal("/expressionList");
     }
 }
