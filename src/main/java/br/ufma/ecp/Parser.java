@@ -23,11 +23,32 @@ public class Parser {
 
     public void parseSubroutineCall(){
         expectPeek(IDENT);
+        if (peekTokenIs(DOT)) {
+            expectPeek(DOT);
+            expectPeek(IDENT);
+        }
         expectPeek(LPAREN);
+        parseExpressionList();
         expectPeek(RPAREN);
     }
 
     public void parseIf() {
+        printNonTerminal("ifStatement");
+        expectPeek(IF);
+        expectPeek(LPAREN);
+        parseExpression();
+        expectPeek(RPAREN);
+        expectPeek(LBRACE);
+        parseStatements();
+        expectPeek(RBRACE);
+
+        if (peekTokenIs(ELSE)) {
+            expectPeek(ELSE);
+            expectPeek(LBRACE);
+            parseStatements();
+            expectPeek(RBRACE);
+        }
+        printNonTerminal("/ifStatement");
     }
 
     public void parseDo() {
@@ -191,4 +212,26 @@ public class Parser {
         }
         printNonTerminal("/expressionList");
     }
+
+    public void parseStatements() {
+        printNonTerminal("statements");
+        while (peekToken.type == IF || peekToken.type == DO) {
+            parseStatement();
+        }
+        printNonTerminal("/statements");
+    }
+
+    private void parseStatement() {
+        switch (peekToken.type) {
+            case IF:
+                parseIf();
+                break;
+            case DO:
+                parseDo();
+                break;
+            default:
+                throw error(peekToken, "Expected a statement");
+        }
+    }
+
 }
