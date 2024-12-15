@@ -107,7 +107,18 @@ public class Parser {
 
 
     public void parse () {
-
+        printNonTerminal("class");
+        expectPeek(CLASS);
+        expectPeek(IDENT);
+        expectPeek(LBRACE);
+        while (peekTokenIs(STATIC) || peekTokenIs(FIELD)) {
+            parseClassVarDec();
+        }
+        while (peekTokenIs(CONSTRUCTOR) || peekTokenIs(FUNCTION) || peekTokenIs(METHOD)) {
+            parseSubroutineDec();
+        }
+        expectPeek(RBRACE);
+        printNonTerminal("/class");
     }
 
     // funções auxiliares
@@ -167,7 +178,7 @@ public class Parser {
     }
 
     static public boolean isOperator(String op) {
-        return op!= null && "+-*/<>=~&|".contains(op);
+        return op != null && "+-*/&|<>=~".contains(op);
     }
 
     void parseExpression() {
@@ -217,6 +228,16 @@ public class Parser {
                     expectPeek(RBRACKET);
                 }
                 break;
+            case LPAREN:
+                expectPeek(LPAREN);
+                parseExpression();
+                expectPeek(RPAREN);
+                break;
+            case MINUS:
+            case NOT:
+                expectPeek(peekToken.type);
+                parseTerm();
+                break;
             default:
                 throw error(peekToken, "term expected");
         }
@@ -238,7 +259,9 @@ public class Parser {
 
     public void parseStatements() {
         printNonTerminal("statements");
-        while (peekToken.type == LET || peekToken.type == IF || peekToken.type == DO || peekToken.type == RETURN) {
+        while (peekToken.type == LET || peekToken.type == IF ||
+                peekToken.type == WHILE || peekToken.type == DO ||
+                peekToken.type == RETURN) {
             parseStatement();
         }
         printNonTerminal("/statements");
@@ -255,12 +278,27 @@ public class Parser {
             case DO:
                 parseDo();
                 break;
+            case WHILE:
+                parseWhile();
+                break;
             case RETURN:
                 parseReturn();
                 break;
             default:
                 throw error(peekToken, "Expected a statement");
         }
+    }
+
+    public void parseWhile() {
+        printNonTerminal("whileStatement");
+        expectPeek(WHILE);
+        expectPeek(LPAREN);
+        parseExpression();
+        expectPeek(RPAREN);
+        expectPeek(LBRACE);
+        parseStatements();
+        expectPeek(RBRACE);
+        printNonTerminal("/whileStatement");
     }
 
     public void parseReturn() {

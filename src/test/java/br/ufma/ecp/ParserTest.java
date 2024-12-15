@@ -131,6 +131,8 @@ public class ParserTest extends TestSupport {
         var expectedResult =  """
           <identifier> hello </identifier>
           <symbol> ( </symbol>
+          <expressionList>
+          </expressionList>
           <symbol> ) </symbol>
           """;
 
@@ -490,6 +492,7 @@ public class ParserTest extends TestSupport {
         System.out.println(result);
 
     }
+
     @Test
     public void testParseDo2() {
         var input = "do hello();";
@@ -501,6 +504,8 @@ public class ParserTest extends TestSupport {
             <keyword> do </keyword>
             <identifier> hello </identifier>
             <symbol> ( </symbol>
+            <expressionList>
+            </expressionList>
             <symbol> ) </symbol>
             <symbol> ; </symbol>
           </doStatement>
@@ -510,4 +515,5 @@ public class ParserTest extends TestSupport {
         result = result.replaceAll("\r", ""); // no codigo em linux não tem o retorno de carro
         assertEquals(expectedResult, result);
     }
+
 }
