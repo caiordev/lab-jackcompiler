@@ -1,8 +1,11 @@
 package br.ufma.ecp;
 
+import br.ufma.ecp.VMWriter.Command;
 import br.ufma.ecp.VMWriter.Segment;
 import br.ufma.ecp.token.Token;
 import br.ufma.ecp.token.TokenType;
+import static br.ufma.ecp.token.TokenType.AND;
+import static br.ufma.ecp.token.TokenType.ASTERISK;
 import static br.ufma.ecp.token.TokenType.BOOLEAN;
 import static br.ufma.ecp.token.TokenType.CHAR;
 import static br.ufma.ecp.token.TokenType.CLASS;
@@ -15,6 +18,7 @@ import static br.ufma.ecp.token.TokenType.EQ;
 import static br.ufma.ecp.token.TokenType.FALSE;
 import static br.ufma.ecp.token.TokenType.FIELD;
 import static br.ufma.ecp.token.TokenType.FUNCTION;
+import static br.ufma.ecp.token.TokenType.GT;
 import static br.ufma.ecp.token.TokenType.IDENT;
 import static br.ufma.ecp.token.TokenType.IF;
 import static br.ufma.ecp.token.TokenType.INT;
@@ -22,16 +26,20 @@ import static br.ufma.ecp.token.TokenType.LBRACE;
 import static br.ufma.ecp.token.TokenType.LBRACKET;
 import static br.ufma.ecp.token.TokenType.LET;
 import static br.ufma.ecp.token.TokenType.LPAREN;
+import static br.ufma.ecp.token.TokenType.LT;
 import static br.ufma.ecp.token.TokenType.METHOD;
 import static br.ufma.ecp.token.TokenType.MINUS;
 import static br.ufma.ecp.token.TokenType.NOT;
 import static br.ufma.ecp.token.TokenType.NULL;
 import static br.ufma.ecp.token.TokenType.NUMBER;
+import static br.ufma.ecp.token.TokenType.OR;
+import static br.ufma.ecp.token.TokenType.PLUS;
 import static br.ufma.ecp.token.TokenType.RBRACE;
 import static br.ufma.ecp.token.TokenType.RBRACKET;
 import static br.ufma.ecp.token.TokenType.RETURN;
 import static br.ufma.ecp.token.TokenType.RPAREN;
 import static br.ufma.ecp.token.TokenType.SEMICOLON;
+import static br.ufma.ecp.token.TokenType.SLASH;
 import static br.ufma.ecp.token.TokenType.STATIC;
 import static br.ufma.ecp.token.TokenType.STRING;
 import static br.ufma.ecp.token.TokenType.THIS;
@@ -227,8 +235,10 @@ public class Parser {
         printNonTerminal("expression");
         parseTerm ();
         while (isOperator(peekToken.lexeme)) {
+            var ope = peekToken.type;
             expectPeek(peekToken.type);
             parseTerm();
+            compileOperators(ope);
         }
         printNonTerminal("/expression");
     }
@@ -390,6 +400,35 @@ public class Parser {
         }
         expectPeek(SEMICOLON);
         printNonTerminal("/varDec");
+    }
+
+    public void compileOperators(TokenType type) {
+
+        if (type == ASTERISK) {
+            vmWriter.writeCall("Math.multiply", 2);
+        } else if (type == SLASH) {
+            vmWriter.writeCall("Math.divide", 2);
+        } else {
+            vmWriter.writeArithmetic(typeOperator(type));
+        }
+    }
+
+    private Command typeOperator(TokenType type) {
+        if (type == PLUS)
+            return Command.ADD;
+        if (type == MINUS)
+            return Command.SUB;
+        if (type == LT)
+            return Command.LT;
+        if (type == GT)
+            return Command.GT;
+        if (type == EQ)
+            return Command.EQ;
+        if (type == AND)
+            return Command.AND;
+        if (type == OR)
+            return Command.OR;
+        return null;
     }
 
 }
