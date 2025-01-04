@@ -1,5 +1,6 @@
 package br.ufma.ecp;
 
+import br.ufma.ecp.VMWriter.Segment;
 import br.ufma.ecp.token.Token;
 import br.ufma.ecp.token.TokenType;
 import static br.ufma.ecp.token.TokenType.BOOLEAN;
@@ -237,6 +238,7 @@ public class Parser {
         switch (peekToken.type){
             case NUMBER:
                 expectPeek(TokenType.NUMBER);
+                vmWriter.writePush(Segment.CONST, Integer.parseInt(currentToken.lexeme));
                 break;
             case STRING:
                 expectPeek(TokenType.STRING);
