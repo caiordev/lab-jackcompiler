@@ -1,10 +1,51 @@
 package br.ufma.ecp;
 
 import br.ufma.ecp.token.Token;
-import static br.ufma.ecp.token.TokenType.*;
 import br.ufma.ecp.token.TokenType;
+import static br.ufma.ecp.token.TokenType.BOOLEAN;
+import static br.ufma.ecp.token.TokenType.CHAR;
+import static br.ufma.ecp.token.TokenType.CLASS;
+import static br.ufma.ecp.token.TokenType.COMMA;
+import static br.ufma.ecp.token.TokenType.CONSTRUCTOR;
+import static br.ufma.ecp.token.TokenType.DO;
+import static br.ufma.ecp.token.TokenType.DOT;
+import static br.ufma.ecp.token.TokenType.ELSE;
+import static br.ufma.ecp.token.TokenType.EQ;
+import static br.ufma.ecp.token.TokenType.FALSE;
+import static br.ufma.ecp.token.TokenType.FIELD;
+import static br.ufma.ecp.token.TokenType.FUNCTION;
+import static br.ufma.ecp.token.TokenType.IDENT;
+import static br.ufma.ecp.token.TokenType.IF;
+import static br.ufma.ecp.token.TokenType.INT;
+import static br.ufma.ecp.token.TokenType.LBRACE;
+import static br.ufma.ecp.token.TokenType.LBRACKET;
+import static br.ufma.ecp.token.TokenType.LET;
+import static br.ufma.ecp.token.TokenType.LPAREN;
+import static br.ufma.ecp.token.TokenType.METHOD;
+import static br.ufma.ecp.token.TokenType.MINUS;
+import static br.ufma.ecp.token.TokenType.NOT;
+import static br.ufma.ecp.token.TokenType.NULL;
+import static br.ufma.ecp.token.TokenType.NUMBER;
+import static br.ufma.ecp.token.TokenType.RBRACE;
+import static br.ufma.ecp.token.TokenType.RBRACKET;
+import static br.ufma.ecp.token.TokenType.RETURN;
+import static br.ufma.ecp.token.TokenType.RPAREN;
+import static br.ufma.ecp.token.TokenType.SEMICOLON;
+import static br.ufma.ecp.token.TokenType.STATIC;
+import static br.ufma.ecp.token.TokenType.STRING;
+import static br.ufma.ecp.token.TokenType.THIS;
+import static br.ufma.ecp.token.TokenType.TRUE;
+import static br.ufma.ecp.token.TokenType.VAR;
+import static br.ufma.ecp.token.TokenType.VOID;
+import static br.ufma.ecp.token.TokenType.WHILE;
 
 public class Parser {
+
+    private VMWriter vmWriter = new VMWriter();
+
+    public String VMOutput() {
+        return vmWriter.vmOutput();
+    }
 
     public void parseLet() {
         printNonTerminal("letStatement");
