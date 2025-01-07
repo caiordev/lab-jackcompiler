@@ -54,6 +54,8 @@ public class Parser {
     private int ifLabelNum = 0 ;
     private int whileLabelNum = 0;
 
+    private SymbolTable symTable = new SymbolTable();
+
     public String VMOutput() {
         return vmWriter.vmOutput();
     }
