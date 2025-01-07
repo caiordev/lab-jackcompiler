@@ -299,11 +299,15 @@ public class Parser {
                 break;
             case MINUS:
             case NOT:
-                expectPeek(peekToken.type);
+                expectPeek(MINUS, NOT);
+                var op = currentToken.type;
                 parseTerm();
+                if (op == MINUS)
+                    vmWriter.writeArithmetic(Command.NEG);
+                else
+                    vmWriter.writeArithmetic(Command.NOT);
+
                 break;
-            default:
-                throw error(peekToken, "term expected");
         }
 
         printNonTerminal("/term");
@@ -331,7 +335,7 @@ public class Parser {
         printNonTerminal("/statements");
     }
 
-    private void parseStatement() {
+    public void parseStatement() {
         switch (peekToken.type) {
             case LET:
                 parseLet();
@@ -365,13 +369,17 @@ public class Parser {
         printNonTerminal("/whileStatement");
     }
 
-    public void parseReturn() {
+   public void parseReturn() {
         printNonTerminal("returnStatement");
         expectPeek(RETURN);
         if (!peekTokenIs(SEMICOLON)) {
             parseExpression();
+        } else {
+            vmWriter.writePush(Segment.CONST, 0);
         }
         expectPeek(SEMICOLON);
+        vmWriter.writeReturn();
+
         printNonTerminal("/returnStatement");
     }
 
@@ -412,7 +420,7 @@ public class Parser {
         expectPeek(SEMICOLON);
         printNonTerminal("/varDec");
     }
-
+    
     public void compileOperators(TokenType type) {
 
         if (type == ASTERISK) {
