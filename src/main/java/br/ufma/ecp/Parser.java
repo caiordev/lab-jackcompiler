@@ -106,12 +106,12 @@ public class Parser {
         printNonTerminal("/letStatement");
     }
 
-    public void parseSubroutineCall(){
+    public void parseSubroutineCall() {
         var nArgs = 0;
         var name = currentToken.lexeme;
         var symbol = symTable.resolve(name);
         String functionName;
-
+    
         if (peekTokenIs(LPAREN)) { // method call in current class
             expectPeek(LPAREN);
             vmWriter.writePush(Segment.POINTER, 0);
@@ -123,19 +123,23 @@ public class Parser {
             expectPeek(IDENT);
             var methodName = currentToken.lexeme;
             
-            if (symbol != null) { // method call on object
-                functionName = symbol.type() + "." + methodName;
+            if (symbol != null) {
+                String typeName = symbol.type();
+
+                typeName = Character.toUpperCase(typeName.charAt(0)) + typeName.substring(1);
+                functionName = typeName + "." + methodName;
                 vmWriter.writePush(kind2Segment(symbol.kind()), symbol.index());
                 nArgs = 1;
-            } else { // function or constructor call
-                functionName = name + "." + methodName;
+            } else {
+                String className = Character.toUpperCase(name.charAt(0)) + name.substring(1);
+                functionName = className + "." + methodName;
             }
-
+    
             expectPeek(LPAREN);
             nArgs += parseExpressionList();
             expectPeek(RPAREN);
         }
-
+    
         vmWriter.writeCall(functionName, nArgs);
     }
 
@@ -428,13 +432,12 @@ public class Parser {
 
         var nArgs = 0;
 
-        if (!peekTokenIs(RPAREN)) // verifica se tem pelo menos uma expressao
+        if (!peekTokenIs(RPAREN))
         {
             parseExpression();
             nArgs = 1;
         }
 
-        // procurando as demais
         while (peekTokenIs(COMMA)) {
             expectPeek(COMMA);
             parseExpression();
@@ -497,8 +500,8 @@ public class Parser {
         expectPeek(LBRACE);
         parseStatements();
 
-        vmWriter.writeGoto(labelTrue); // Go back to labelTrue and check condition
-        vmWriter.writeLabel(labelFalse); // Breaks out of while loop because ~(condition) is true
+        vmWriter.writeGoto(labelTrue);
+        vmWriter.writeLabel(labelFalse);
 
         expectPeek(RBRACE);
         printNonTerminal("/whileStatement");
@@ -579,9 +582,8 @@ public class Parser {
 
         // 'int'| 'char'| 'boolean'| className
         expectPeek(INT, CHAR, BOOLEAN, IDENT);
-        expectPeek(IDENT);
-
         String type = currentToken.lexeme;
+        expectPeek(IDENT);
         String name = currentToken.lexeme;
 
         symTable.define(name, type, kind);

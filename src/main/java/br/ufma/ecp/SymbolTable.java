@@ -28,6 +28,8 @@ public class SymbolTable {
 
   }
 
+  
+
   public void startSubroutine() {
 
     subroutineScope.clear();
@@ -67,5 +69,13 @@ public class SymbolTable {
   int varCount(Kind kind) {
     return countVars.get(kind);
   }
+
+  public String getOriginalTypeName(String name) {
+    Symbol symbol = resolve(name);
+    if (symbol != null) {
+        return symbol.type(); // This should preserve the original capitalization
+    }
+    return name;
+}
 
 }

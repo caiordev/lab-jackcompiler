@@ -430,7 +430,7 @@ public class GeneratorCodeTest {
             call Point.new 2
             pop local 0
             push local 0
-            call p.getX 1
+            call Point.getX 1
             pop local 1
             push constant 0
             return
